@@ -37,6 +37,6 @@ def edit_transaction(df: pd.DataFrame, index: int, **kwargs) -> pd.DataFrame:
     """
     pass
 
-def delete_transaction(df: pd.DataFrame, index: int) -> pd.DataFrame:
-    """Removes a transaction by index and returns the updated DataFrame."""
-    pass
+def delete_transaction(df):
+    awnser = int(input("Enter the index of the transaction to delete: "))
+    df.drop(awnser, axis='index', inplace=True)
