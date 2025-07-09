@@ -7,9 +7,8 @@ def import_transactions(file_path: str) -> pd.DataFrame:
     """
     pass
 
-def view_all_transactions(df: pd.DataFrame) -> None:
-    """Displays all transactions."""
-    pass
+def view_all_transactions(df):
+    print(df)
 
 def view_transactions_by_date(df: pd.DataFrame, start: str, end: str) -> None:
     """Filters and displays transactions between two dates (YYYY-MM-DD)."""
