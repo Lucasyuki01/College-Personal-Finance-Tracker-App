@@ -10,9 +10,17 @@ def import_transactions(file_path: str) -> pd.DataFrame:
 def view_all_transactions(df):
     print(df)
 
-def view_transactions_by_date(df: pd.DataFrame, start: str, end: str) -> None:
-    """Filters and displays transactions between two dates (YYYY-MM-DD)."""
-    pass
+def view_transactions_by_date(df):
+    start_date = input("Enter the start date(YYYY-MM-DD): ")
+    end_date = input("Enter the end date(YYYY-MM-DD): ")
+    print()
+    print("----Transactions from", start_date, "to", end_date,"----")
+
+    df_by_date = df[(df["Date"] >= start_date) & (df["Date"] <= end_date)].reset_index(drop=True)
+    if df_by_date.empty:
+        print("No transactions found in this date range")
+    else:
+        print(df_by_date)
 
 def add_a_transaction(df):
     date = input("Enter the date(YYYY-MM-DD): ")
