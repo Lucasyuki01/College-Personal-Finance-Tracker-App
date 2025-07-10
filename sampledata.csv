@@ -8,8 +8,10 @@ Date,Category,Description,Amount,Type
 2024-10-06,Income,Salary,2000.0,Income
 2024-10-10,Income,Freelance Work,500.0,Income
 2024-10-12,Utilities,Water Bill,40.0,Expense
-2024-10-15,Food,Lunch,25.0,Expense
 2024-10-18,Transport,Taxi,25.0,Expense
 2024-10-20,Income,Investment Return,200.0,Income
 2024-10-25,Food,Groceries,80.0,Expense
 2024-10-28,Rent,Monthly Rent,1200.0,Expense
+2025-01-02,Utilities,Temporary car,1000.0,Expense
+2025-12-17,Emergency,Christimas food,250.0,Expense
+2025-12-20,Utilities,Insurance,700.0,Expense
