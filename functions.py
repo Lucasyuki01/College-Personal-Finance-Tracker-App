@@ -1,10 +1,19 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+def dont_leave_without_goodbye():
+    while True:
+        awnser = input("Press q to quit...").lower()
+        if awnser == 'q':
+            break
+        else:
+            print('Wrong button buddy')
+
 # function -> 1
 def view_all_transactions(df):
     print(df)
     print()
+    dont_leave_without_goodbye()
 
 # function -> 2
 def view_transactions_by_date(df):
@@ -19,6 +28,7 @@ def view_transactions_by_date(df):
     else:
         print(df_by_date)
     print()
+    dont_leave_without_goodbye()
 
 # function -> 3
 def add_a_transaction(df):
@@ -34,6 +44,8 @@ def add_a_transaction(df):
     print("Transaction added successfully")
     print(df)
     print()
+    dont_leave_without_goodbye()
+
     return df
 
 # function -> 4
@@ -49,9 +61,12 @@ def delete_transaction(df):
     awnser = int(input("Enter the index of the transaction to delete: "))
     df.drop(awnser, axis='index', inplace=True)
     print()
+    print(f'Transaction was removed sucessfully')
+    dont_leave_without_goodbye()
 
 # function -> 6
 def spending_by_category(df):
+    df['Type'] = df['Type'].str.strip().str.capitalize()
     df_expenses = df[df['Type'] == 'Expense']
 
     grouped = df_expenses.groupby('Category').agg(
@@ -79,6 +94,7 @@ def spending_by_category(df):
 
     plt.tight_layout()
     plt.show()  
+    dont_leave_without_goodbye()
 
 # function -> 7
 def average_monthly_spending(df):
@@ -96,6 +112,7 @@ def average_monthly_spending(df):
 
     print(f"Average monthly spending CA${avg_spending:.2f}")
     print()
+    dont_leave_without_goodbye()
 
 # function -> 8
 def top_spending_category(df):
@@ -108,6 +125,7 @@ def top_spending_category(df):
 
     print(f"Top spending category: {top_category} — Total spent: CA${top_amount:.2f}")
     print()
+    dont_leave_without_goodbye()
 
 #function -> 9
 def visualize_monthly_spending_trend():

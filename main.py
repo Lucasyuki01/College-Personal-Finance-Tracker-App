@@ -21,13 +21,13 @@ def handle_choice(choice, df):
         view_all_transactions(df)
 
     elif choice == 2:
-        view_transactions_by_date()
+        view_transactions_by_date(df)
     
     elif choice == 3:
-        add_a_transaction()
+        add_a_transaction(df)
 
     elif choice == 4:
-        edit_transaction()
+        edit_transaction(df)
 
     elif choice == 5:
         delete_transaction(df)
@@ -46,6 +46,7 @@ def handle_choice(choice, df):
 
     elif choice == 10:
         return False
+    
     return True
 def main():
     df = pd.read_csv("sampledata.csv")
