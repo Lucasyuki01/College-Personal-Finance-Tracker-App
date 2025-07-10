@@ -32,13 +32,11 @@ def handle_choice(choice, df):
     elif choice == 5:
         df = delete_transaction(df)
 
-    elif choice == 6:
-        print("\nDEBUG: Current df before spending_by_category:")
-        print(df.tail())  
+    elif choice == 6:  
         spending_by_category(df)
 
     elif choice == 7:
-        average_monthly_spending(df)
+        avg, monthly = average_monthly_spending(df)
 
     elif choice == 8:
         top_spending_category(df)
