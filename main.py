@@ -27,7 +27,7 @@ def handle_choice(choice, df):
         view_transactions_by_date()
     
     elif choice == 3:
-        add_transaction()
+        add_a_transaction()
 
     elif choice == 4:
         edit_transaction()
@@ -36,7 +36,7 @@ def handle_choice(choice, df):
         delete_transaction(df)
 
     elif choice == 6:
-        analyse_spending__by_category()
+        spending_by_category(df)
 
     elif choice == 7:
         calculate_average_monthly()
