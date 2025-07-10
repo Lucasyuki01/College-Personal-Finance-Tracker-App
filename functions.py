@@ -52,32 +52,39 @@ def add_a_transaction(df):
 
 
 def edit_transaction(df):
-    """
-    Example: edit one field of a transaction by index.
-    """
-    idx = int(input("Enter the index of the transaction to edit: "))
-    if idx not in df.index:
-        print("⚠️  Invalid index\n")
-        return df
+    index = int(input("Enter the index of the transaction you want to edit: "))
+    print()
+    print("Current Transaction Details")
 
-    print("Current row:")
-    print(df.loc[[idx]], "\n")
+    row = df.loc[index]
 
-    field = input("Which field to edit? (Date/Category/Description/Amount/Type): ")
-    if field not in df.columns:
-        print("⚠️  Unknown field\n")
-        return df
+    print(row)
+    print()
 
-    new_value = input(f"Enter new value for {field}: ")
-    # convert amount to float if needed
-    if field == "Amount":
-        new_value = float(new_value)
+    new_date = input("Enter new date (YYYY-MM-DD) or press Enter to keep current:")
+    new_category = input("Enter new category or press Enter to keep current:")
+    new_description = input("Enter new description or press Enter to keep current:")
+    new_amount = input("Enter new amount or press Enter to keep current:")
+    new_type = input("Enter new type or press Enter to keep current:")
 
-    df.at[idx, field] = new_value
+    new_date = new_date if new_date else row["Date"]
+    new_category = new_category if new_category else row["Category"]
+    new_description = new_description if new_description else row["Description"]
+    new_amount = float(new_amount) if new_amount else row["Amount"]
+    new_type = new_type if new_type else row["Type"]
 
-    # --- SAVE TO CSV ---
-    df.to_csv(DATA_FILE, index=False)
-    print("✅ Transaction edited and saved to CSV\n")
+    new_row = {"Date":new_date,"Category":new_category,"Description":new_description, "Amount":new_amount, "Type":new_type}
+
+    df.drop(index, inplace = True)
+
+    df.reset_index(inplace = True)
+
+    df.loc[len(df)] = new_row
+    df = df.sort_values(by=["Date"], ascending=True, ignore_index=True)
+
+    print("Transaction updated successfully")
+    print()
+    print(df)
     return df
 
 
@@ -139,14 +146,21 @@ def top_spending_category(df):
     top_category = totals_by_cat.idxmax()
     top_amount   = totals_by_cat.max()
     print(f"Top spending category: {top_category} — Total spent: CA${top_amount:.2f}\n")
+    dont_leave_without_goodbye()
     return top_category, top_amount
 
-    print(f"Top spending category: {top_category} — Total spent: CA${top_amount:.2f}")
-    print()
-    dont_leave_without_goodbye()
+def visualize_monthly_spend_trend(df):
+    df = df[df["Type"] == "Expense"].copy()
+    df["Date"] = pd.to_datetime(df["Date"])
 
-def visualize_monthly_spending_trend(df):
-    """
-    You could implement a line plot here.
-    """
-    pass
+    monthly_sum = df.groupby(df["Date"].dt.to_period("M"))["Amount"].sum()
+
+    print(monthly_sum)
+
+    monthly_sum.plot(kind = "line",marker = "o")
+
+    plt.xlabel("Month")
+    plt.ylabel("Monthly Spend Sum")
+    plt.title("Monthly Spend Trend")
+    plt.grid(True)
+    plt.show()

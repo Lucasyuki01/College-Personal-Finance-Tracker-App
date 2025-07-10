@@ -44,7 +44,7 @@ def handle_choice(choice, df):
         top_spending_category(df)
 
     elif choice == 9:
-        visualize_monthly_spending_trend(df)
+        visualize_monthly_spend_trend(df)
 
     elif choice == 10:
         print("Goodbye!")
