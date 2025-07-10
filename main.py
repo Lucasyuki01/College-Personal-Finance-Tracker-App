@@ -27,7 +27,7 @@ def handle_choice(choice, df):
         df = add_a_transaction(df)
 
     elif choice == 4:
-        df = edit_transaction(df)
+        df = edit_a_transaction(df)
 
     elif choice == 5:
         df = delete_transaction(df)
