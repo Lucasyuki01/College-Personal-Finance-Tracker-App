@@ -1,7 +1,4 @@
-from data_management import *
-from data_analysis import *
-from budget_management import *
-from visualization import *
+from functions import *
 
 def display_menu() -> None:
     print("===== Personal Finance Tracker =====")
@@ -21,7 +18,7 @@ def display_menu() -> None:
 
 def handle_choice(choice, df):
     if choice == 1:
-        view_all_transactions()
+        view_all_transactions(df)
 
     elif choice == 2:
         view_transactions_by_date()
