@@ -1,5 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from datetime import datetime
+
 
 DATA_FILE = "sampledata.csv"
 
@@ -18,32 +20,101 @@ def view_all_transactions(df):
     dont_leave_without_goodbye()
 
 def view_transactions_by_date(df):
-    start_date = input("Enter the start date (YYYY-MM-DD): ")
-    end_date   = input("Enter the end date   (YYYY-MM-DD): ")
+    print("=== View Transactions by Date Range ===")
+
+    while True:
+        start_date = input("Enter the start date (YYYY-MM-DD): ")
+        try:
+            start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
+        except ValueError:
+            print("Invalid format for start date. Please use YYYY-MM-DD.\n")
+            continue
+
+        end_date = input("Enter the end date (YYYY-MM-DD): ")
+        try:
+            end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
+        except ValueError:
+            print("Invalid format for end date. Please use YYYY-MM-DD.\n")
+            continue
+
+        if start_date_obj > end_date_obj:
+            print("Start date must be earlier than or equal to end date. Please try again.\n")
+            continue
+
+        break
+
     print(f"\n---- Transactions from {start_date} to {end_date} ----")
-    subset = df[(df["Date"] >= start_date) & (df["Date"] <= end_date)].reset_index(drop=True)
-    if subset.empty:
-        print("No transactions found in this date range\n")
+
+    df_by_date = df[(df["Date"] >= start_date) & (df["Date"] <= end_date)].reset_index(drop=True)
+
+    if df_by_date.empty:
+        print("No transactions found in this date range.")
     else:
-        print(subset, "\n")
+        print(df_by_date)
 
+# Helper function to capitalize only the first letter of a string
+def capitalize_first_letter(text):
+    # Remove leading and trailing whitespace
+    text = text.strip()
+    # If the string is empty, return it as is
+    if not text:
+        return text
+    # Capitalize the first letter and make the rest lowercase
+    return text[0].upper() + text[1:].lower()
 
+# Main function to add a transaction to the DataFrame
 def add_a_transaction(df):
-    date        = input("Enter the date (YYYY-MM-DD): ")
-    category    = input("Enter the category of the transaction: ")
-    description = input("Enter the description of the transaction: ")
-    amount      = float(input("Enter the amount of the transaction: "))
-    ttype       = input("Enter the type (Expense or Income): ")
+    # Input and validate the date
+    while True:
+        date = input("Enter the date (YYYY-MM-DD): ")
+        try:
+            # Try converting the input string to a datetime object
+            datetime.strptime(date, "%Y-%m-%d")
+            break
+        except ValueError:
+            print("Invalid date format. Please use YYYY-MM-DD.")
 
-    new_row = {
-        "Date": date,
-        "Category": category,
-        "Description": description,
-        "Amount": amount,
-        "Type": ttype
-    }
+    # Input and format the category (capitalize first letter only)
+    category = capitalize_first_letter(input("Enter the category of the transaction: "))
+
+    # Input and format the description (capitalize first letter only)
+    description = capitalize_first_letter(input("Enter the description of the transaction: "))
+
+    # Input and validate the amount
+    while True:
+        amount = input("Enter the amount of the transaction: ")
+        try:
+            amount = float(amount)
+            if amount < 0:
+                print("Amount cannot be negative.")
+            else:
+                break
+        except ValueError:
+            print("Invalid amount. Please enter a number.")
+
+    # Input and validate the type (capitalize first letter only)
+    while True:
+        type_input = input("Enter the type of the transaction (Expense or Income): ")
+        type_cap = capitalize_first_letter(type_input)
+        if type_cap in ["Expense", "Income"]:
+            type = type_cap
+            break
+        else:
+            print("Invalid type. Please enter 'Expense' or 'Income'.")
+
+    # Create a new row and add it to the DataFrame
+    new_row = {"Date": date, "Category": category,"Description": description, "Amount": amount, "Type": type}
+
     df.loc[len(df)] = new_row
-    df.sort_values(by="Date", ascending=True, ignore_index=True, inplace=True)
+
+    # Sort the DataFrame by date
+    df = df.sort_values(by=["Date"], ascending=True, ignore_index=True)
+
+    # Notify user and show the updated DataFrame
+    print("Transaction added successfully.")
+    print(df)
+
+    return df
 
     # --- SAVE TO CSV ---
     df.to_csv(DATA_FILE, index=False)
@@ -51,42 +122,99 @@ def add_a_transaction(df):
     return df
 
 
-def edit_transaction(df):
-    index = int(input("Enter the index of the transaction you want to edit: "))
-    print()
-    print("Current Transaction Details")
+# Function to edit an existing transaction in the DataFrame
+def edit_a_transaction(df):
+    # Input and validate the index
+    while True:
+        try:
+            index = int(input("Enter the index of the transaction you want to edit: "))
+            if 0 <= index < len(df):
+                break
+            else:
+                print("Index out of range.")
+        except ValueError:
+            print("Please enter a valid integer index.")
 
+    print("\nCurrent Transaction Details")
     row = df.loc[index]
-
     print(row)
     print()
 
-    new_date = input("Enter new date (YYYY-MM-DD) or press Enter to keep current:")
-    new_category = input("Enter new category or press Enter to keep current:")
-    new_description = input("Enter new description or press Enter to keep current:")
-    new_amount = input("Enter new amount or press Enter to keep current:")
-    new_type = input("Enter new type or press Enter to keep current:")
+    # Input new values or press Enter to keep current ones
 
-    new_date = new_date if new_date else row["Date"]
-    new_category = new_category if new_category else row["Category"]
-    new_description = new_description if new_description else row["Description"]
-    new_amount = float(new_amount) if new_amount else row["Amount"]
-    new_type = new_type if new_type else row["Type"]
+    # Date input and validation
+    while True:
+        new_date = input("Enter new date (YYYY-MM-DD) or press Enter to keep current: ")
+        if new_date == "":
+            new_date = row["Date"]
+            break
+        try:
+            datetime.strptime(new_date, "%Y-%m-%d")
+            break
+        except ValueError:
+            print("Invalid date format. Please use YYYY-MM-DD.")
 
-    new_row = {"Date":new_date,"Category":new_category,"Description":new_description, "Amount":new_amount, "Type":new_type}
+    # Category input with formatting
+    new_category = input("Enter new category or press Enter to keep current: ")
+    new_category = capitalize_first_letter(new_category) if new_category else row["Category"]
 
-    df.drop(index, inplace = True)
+    # Description input with formatting
+    new_description = input("Enter new description or press Enter to keep current: ")
+    new_description = capitalize_first_letter(new_description) if new_description else row["Description"]
 
-    df.reset_index(inplace = True)
+    # Amount input and validation
+    while True:
+        new_amount = input("Enter new amount or press Enter to keep current: ")
+        if new_amount == "":
+            new_amount = row["Amount"]
+            break
+        try:
+            new_amount = float(new_amount)
+            if new_amount < 0:
+                print("Amount cannot be negative.")
+            else:
+                break
+        except ValueError:
+            print("Invalid amount. Please enter a number.")
 
+    # Type input and validation
+    while True:
+        new_type = input("Enter new type (Expense or Income) or press Enter to keep current: ")
+        if new_type == "":
+            new_type = row["Type"]
+            break
+        new_type = capitalize_first_letter(new_type)
+        if new_type in ["Expense", "Income"]:
+            break
+        else:
+            print("Invalid type. Please enter 'Expense' or 'Income'.")
+
+    # Create a new row with updated values
+    new_row = {
+        "Date": new_date,
+        "Category": new_category,
+        "Description": new_description,
+        "Amount": new_amount,
+        "Type": new_type
+    }
+
+    # Remove the old row
+    df.drop(index, inplace=True)
+
+    # Reset the index after dropping
+    df.reset_index(drop=True, inplace=True)
+
+    # Add the new row at the end
     df.loc[len(df)] = new_row
+
+    # Sort the DataFrame by date
     df = df.sort_values(by=["Date"], ascending=True, ignore_index=True)
 
-    print("Transaction updated successfully")
-    print()
+    # Show success message and updated DataFrame
+    print("Transaction updated successfully.\n")
     print(df)
-    return df
 
+    return df
 
 def delete_transaction(df):
     idx = int(input("Enter the index to delete: "))
