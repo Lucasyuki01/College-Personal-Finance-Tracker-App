@@ -99,20 +99,13 @@ def average_monthly_spending(df):
 
 # function -> 8
 def top_spending_category(df):
-    # 1) Work on a copy
     df_copy = df.copy()
 
-    # 2) Filter only expenses
     expenses = df_copy[df_copy['Type'] == 'Expense']
-
-    # 3) Sum up amounts by category
     totals_by_cat = expenses.groupby('Category')['Amount'].sum()
-
-    # 4) Find the top category
     top_category = totals_by_cat.idxmax()
     top_amount = totals_by_cat.max()
 
-    # 5) Print the result
     print(f"Top spending category: {top_category} — Total spent: CA${top_amount:.2f}")
     print()
 
