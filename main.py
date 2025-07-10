@@ -45,15 +45,16 @@ def handle_choice(choice, df):
         visualize_monthly_spending_trend()
 
     elif choice == 10:
-        exit()
-
+        return False
+    return True
 def main():
     df = pd.read_csv("sampledata.csv")
+    finish = True
 
-    while True:
+    while finish == True:
         display_menu()
         choice = int(input(f"Choose an option (1-10): "))
-        handle_choice(choice, df)
+        finish = handle_choice(choice, df)
 
 if __name__ == "__main__":
     main()
