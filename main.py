@@ -39,7 +39,7 @@ def handle_choice(choice, df):
         average_monthly_spending(df)
 
     elif choice == 8:
-        show_top_spending_category()
+        top_spending_category(df)
 
     elif choice == 9:
         visualize_monthly_spending_trend()
