@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
-
+import os
 
 DATA_FILE = "sampledata.csv"
 
@@ -12,6 +12,11 @@ def dont_leave_without_goodbye():
             break
         else:
             print('Wrong button buddy')
+    clear_screen()
+
+def clear_screen():
+    comando = 'cls' if os.name == 'nt' else 'clear'
+    os.system(comando)
 
 # function -> 1
 def view_all_transactions(df):
@@ -19,6 +24,7 @@ def view_all_transactions(df):
     print()
     dont_leave_without_goodbye()
 
+# function -> 2
 def view_transactions_by_date(df):
     print("=== View Transactions by Date Range ===")
 
@@ -63,6 +69,8 @@ def capitalize_first_letter(text):
     return text[0].upper() + text[1:].lower()
 
 # Main function to add a transaction to the DataFrame
+
+# function -> 3
 def add_a_transaction(df):
     # Input and validate the date
     while True:
@@ -119,8 +127,8 @@ def add_a_transaction(df):
     # --- SAVE TO CSV ---
     df.to_csv(DATA_FILE, index=False)
     print("✅ Transaction added and saved to CSV\n")
+    dont_leave_without_goodbye()
     return df
-
 
 # Function to edit an existing transaction in the DataFrame
 def edit_a_transaction(df):
@@ -214,8 +222,10 @@ def edit_a_transaction(df):
     print("Transaction updated successfully.\n")
     print(df)
 
+    dont_leave_without_goodbye()
     return df
 
+# function -> 5
 def delete_transaction(df):
     idx = int(input("Enter the index to delete: "))
     if idx in df.index:
@@ -225,9 +235,10 @@ def delete_transaction(df):
         print("Deleted and saved.")
     else:
         print("Invalid index.")
+    dont_leave_without_goodbye()
     return df    
 
-
+# function -> 6
 def spending_by_category(df):
     df['Type'] = df['Type'].str.strip().str.capitalize()
     df_expenses = df[df['Type'] == 'Expense']
@@ -255,19 +266,53 @@ def spending_by_category(df):
     plt.show()  
     dont_leave_without_goodbye()
 
+# function -> 7
 def average_monthly_spending(df):
+    # Ensure Date is datetime
     df_copy = df.copy()
     df_copy['Date'] = pd.to_datetime(df_copy['Date'])
-    expenses = df_copy[df_copy['Type']=='Expense'].copy()
+
+    # Ensure Amount is numeric and Type is normalized
+    df_copy['Type'] = df_copy['Type'].astype(str).str.strip().str.capitalize()
+    df_copy['Amount'] = pd.to_numeric(df_copy['Amount'], errors='coerce')
+
+    # Filter only Expenses
+    expenses = df_copy[df_copy['Type'] == 'Expense'].copy()
+
+    if expenses.empty:
+        print("No expense data available.\n")
+        return None, None
+
+    # Create YearMonth column
     expenses['YearMonth'] = expenses['Date'].dt.to_period('M')
+
+    # Group by YearMonth and sum
     monthly_totals = expenses.groupby('YearMonth')['Amount'].sum()
-    avg_spending = monthly_totals.mean()
-    print(f"Average monthly spending: CA${avg_spending:.2f}\n")
+
+    # Calculate average of months with expenses (mean of totals)
+    avg_per_active_month = monthly_totals.mean()
+
+    # Calculate total / total number of months in the period
+    date_range = pd.period_range(
+        expenses['Date'].min().to_period('M'),
+        expenses['Date'].max().to_period('M'),
+        freq='M'
+    )
+    num_months = len(date_range)
+    total_spent = expenses['Amount'].sum()
+    avg_per_full_period = total_spent / num_months if num_months else 0
+
+    print(f"Average monthly spending (active months only): CA${avg_per_active_month:.2f}")
+    print(f"Average monthly spending (entire period):     CA${avg_per_full_period:.2f}\n")
+
+    print("Monthly totals:")
+    print(monthly_totals)
     print()
     dont_leave_without_goodbye()
 
-    return avg_spending, monthly_totals
+    return avg_per_full_period, monthly_totals
 
+# function -> 8
 def top_spending_category(df):
     expenses = df[df['Type']=='Expense']
     totals_by_cat = expenses.groupby('Category')['Amount'].sum()
@@ -277,6 +322,7 @@ def top_spending_category(df):
     dont_leave_without_goodbye()
     return top_category, top_amount
 
+# function -> 9
 def visualize_monthly_spend_trend(df):
     df = df[df["Type"] == "Expense"].copy()
     df["Date"] = pd.to_datetime(df["Date"])
@@ -292,3 +338,4 @@ def visualize_monthly_spend_trend(df):
     plt.title("Monthly Spend Trend")
     plt.grid(True)
     plt.show()
+    dont_leave_without_goodbye()
