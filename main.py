@@ -1,4 +1,4 @@
-from functions import *
+from functions import * 
 
 def display_menu() -> None:
     print("===== Personal Finance Tracker =====")
@@ -36,7 +36,7 @@ def handle_choice(choice, df):
         spending_by_category(df)
 
     elif choice == 7:
-        calculate_average_monthly()
+        average_monthly_spending(df)
 
     elif choice == 8:
         show_top_spending_category()
