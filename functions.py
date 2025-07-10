@@ -112,13 +112,15 @@ def add_a_transaction(df):
     new_row = {"Date": date, "Category": category,"Description": description, "Amount": amount, "Type": type}
 
     df.loc[len(df)] = new_row
+    print()
+    print("Transaction added successfully.")
+    print("You have added the following transaction")
+    print()
+    print(df.loc[len(df) - 1])
 
     # Sort the DataFrame by date
     df = df.sort_values(by=["Date"], ascending=True, ignore_index=True)
-
-    # Notify user and show the updated DataFrame
-    print("Transaction added successfully.")
-    print(df)
+    print()
 
     # --- SAVE TO CSV ---
     df.to_csv(DATA_FILE, index=False)
@@ -226,15 +228,20 @@ def edit_a_transaction(df):
 # function -> 5
 def delete_transaction(df):
     idx = int(input("Enter the index to delete: "))
+    print("Transactions")
+    print(df.loc[idx])
+    print("Deleted and saved.")
     if idx in df.index:
         df.drop(idx, inplace=True)
         df.reset_index(drop=True, inplace=True)
-        df.to_csv(DATA_FILE, index=False)
-        print("Deleted and saved.")
+        # df.to_csv(DATA_FILE, index=False)
     else:
         print("Invalid index.")
+    print()
+
     dont_leave_without_goodbye()
     return df    
+
 
 # function -> 6
 def spending_by_category(df):
