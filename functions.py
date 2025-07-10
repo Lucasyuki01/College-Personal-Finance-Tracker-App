@@ -140,17 +140,49 @@ def spending_by_category(df):
 
 # function -> 7
 def average_monthly_spending(df):
+    # Ensure Date is datetime
     df_copy = df.copy()
     df_copy['Date'] = pd.to_datetime(df_copy['Date'])
-    expenses = df_copy[df_copy['Type']=='Expense'].copy()
+
+    # Ensure Amount is numeric and Type is normalized
+    df_copy['Type'] = df_copy['Type'].astype(str).str.strip().str.capitalize()
+    df_copy['Amount'] = pd.to_numeric(df_copy['Amount'], errors='coerce')
+
+    # Filter only Expenses
+    expenses = df_copy[df_copy['Type'] == 'Expense'].copy()
+
+    if expenses.empty:
+        print("No expense data available.\n")
+        return None, None
+
+    # Create YearMonth column
     expenses['YearMonth'] = expenses['Date'].dt.to_period('M')
+
+    # Group by YearMonth and sum
     monthly_totals = expenses.groupby('YearMonth')['Amount'].sum()
-    avg_spending = monthly_totals.mean()
-    print(f"Average monthly spending: CA${avg_spending:.2f}\n")
+
+    # Calculate average of months with expenses (mean of totals)
+    avg_per_active_month = monthly_totals.mean()
+
+    # Calculate total / total number of months in the period
+    date_range = pd.period_range(
+        expenses['Date'].min().to_period('M'),
+        expenses['Date'].max().to_period('M'),
+        freq='M'
+    )
+    num_months = len(date_range)
+    total_spent = expenses['Amount'].sum()
+    avg_per_full_period = total_spent / num_months if num_months else 0
+
+    print(f"Average monthly spending (active months only): CA${avg_per_active_month:.2f}")
+    print(f"Average monthly spending (entire period):     CA${avg_per_full_period:.2f}\n")
+
+    print("Monthly totals:")
+    print(monthly_totals)
     print()
     dont_leave_without_goodbye()
 
-    return avg_spending, monthly_totals
+    return avg_per_full_period, monthly_totals
 
 # function -> 8
 def top_spending_category(df):
