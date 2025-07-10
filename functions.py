@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 
 DATA_FILE = "sampledata.csv"
 
@@ -10,6 +11,11 @@ def dont_leave_without_goodbye():
             break
         else:
             print('Wrong button buddy')
+    clear_screen()
+
+def clear_screen():
+    comando = 'cls' if os.name == 'nt' else 'clear'
+    os.system(comando)
 
 # function -> 1
 def view_all_transactions(df):
@@ -17,6 +23,7 @@ def view_all_transactions(df):
     print()
     dont_leave_without_goodbye()
 
+# function -> 2
 def view_transactions_by_date(df):
     start_date = input("Enter the start date (YYYY-MM-DD): ")
     end_date   = input("Enter the end date   (YYYY-MM-DD): ")
@@ -26,8 +33,9 @@ def view_transactions_by_date(df):
         print("No transactions found in this date range\n")
     else:
         print(subset, "\n")
+    dont_leave_without_goodbye()
 
-
+# function -> 3
 def add_a_transaction(df):
     date        = input("Enter the date (YYYY-MM-DD): ")
     category    = input("Enter the category of the transaction: ")
@@ -48,9 +56,10 @@ def add_a_transaction(df):
     # --- SAVE TO CSV ---
     df.to_csv(DATA_FILE, index=False)
     print("✅ Transaction added and saved to CSV\n")
+    dont_leave_without_goodbye()
     return df
 
-
+# function -> 4
 def edit_transaction(df):
     index = int(input("Enter the index of the transaction you want to edit: "))
     print()
@@ -85,9 +94,10 @@ def edit_transaction(df):
     print("Transaction updated successfully")
     print()
     print(df)
+    dont_leave_without_goodbye()
     return df
 
-
+# function -> 5
 def delete_transaction(df):
     idx = int(input("Enter the index to delete: "))
     if idx in df.index:
@@ -97,9 +107,10 @@ def delete_transaction(df):
         print("Deleted and saved.")
     else:
         print("Invalid index.")
+    dont_leave_without_goodbye()
     return df    
 
-
+# function -> 6
 def spending_by_category(df):
     df['Type'] = df['Type'].str.strip().str.capitalize()
     df_expenses = df[df['Type'] == 'Expense']
@@ -127,6 +138,7 @@ def spending_by_category(df):
     plt.show()  
     dont_leave_without_goodbye()
 
+# function -> 7
 def average_monthly_spending(df):
     df_copy = df.copy()
     df_copy['Date'] = pd.to_datetime(df_copy['Date'])
@@ -140,6 +152,7 @@ def average_monthly_spending(df):
 
     return avg_spending, monthly_totals
 
+# function -> 8
 def top_spending_category(df):
     expenses = df[df['Type']=='Expense']
     totals_by_cat = expenses.groupby('Category')['Amount'].sum()
@@ -149,6 +162,7 @@ def top_spending_category(df):
     dont_leave_without_goodbye()
     return top_category, top_amount
 
+# function -> 9
 def visualize_monthly_spend_trend(df):
     df = df[df["Type"] == "Expense"].copy()
     df["Date"] = pd.to_datetime(df["Date"])
@@ -164,3 +178,4 @@ def visualize_monthly_spend_trend(df):
     plt.title("Monthly Spend Trend")
     plt.grid(True)
     plt.show()
+    dont_leave_without_goodbye()
