@@ -82,7 +82,20 @@ def spending_by_category(df):
 
 # function -> 7
 def average_monthly_spending(df):
-    """Calculates the average spending per month."""
+    
+    df_copy = df.copy()
+    df_copy['Date'] = pd.to_datetime(df_copy['Date'])
+
+    expenses = df_copy[df_copy['Type'] == 'Expense'].copy()
+
+    expenses['YearMonth'] = expenses['Date'].dt.to_period('M')
+
+    monthly_totals = expenses.groupby('YearMonth')['Amount'].sum()
+
+    avg_spending = monthly_totals.mean()
+
+    print(f"Average monthly spending CA${avg_spending:.2f}")
+    print()
 
 # function -> 8
 def top_spending_category():
