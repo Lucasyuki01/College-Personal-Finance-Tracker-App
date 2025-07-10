@@ -68,8 +68,6 @@ def capitalize_first_letter(text):
     # Capitalize the first letter and make the rest lowercase
     return text[0].upper() + text[1:].lower()
 
-# Main function to add a transaction to the DataFrame
-
 # function -> 3
 def add_a_transaction(df):
     # Input and validate the date
@@ -122,12 +120,10 @@ def add_a_transaction(df):
     print("Transaction added successfully.")
     print(df)
 
-    return df
-
     # --- SAVE TO CSV ---
     df.to_csv(DATA_FILE, index=False)
-    print("✅ Transaction added and saved to CSV\n")
     dont_leave_without_goodbye()
+
     return df
 
 # Function to edit an existing transaction in the DataFrame
@@ -222,6 +218,8 @@ def edit_a_transaction(df):
     print("Transaction updated successfully.\n")
     print(df)
 
+    df.to_csv(DATA_FILE, index=False)
+    print("Transaction updated and saved.\n")
     dont_leave_without_goodbye()
     return df
 
