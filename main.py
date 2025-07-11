@@ -5,46 +5,34 @@ DATA_FILE = "sampledata.csv"
 
 def display_menu() -> None:
     print("===== Personal Finance Tracker =====\n")
-    print("1. View All Transactions")
+    print("1. View All Transactions (Add/Edit/Delete)")
     print("2. View Transactions by Date Range")
-    print("3. Add a Transaction")
-    print("4. Edit a Transaction")
-    print("5. Delete a Transaction")
-    print("6. Analyze Spending by Category")
-    print("7. Calculate Average Monthly Spending")
-    print("8. Show Top Spending Category")
-    print("9. Visualize Monthly Spending Trend")
-    print("10. Exit\n")
+    print("3. Analyze Spending by Category")
+    print("4. Calculate Average Monthly Spending")
+    print("5. Show Top Spending Category")
+    print("6. Visualize Monthly Spending Trend")
+    print("7. Exit\n")
 
 def handle_choice(choice, df):
     if choice == 1:
-        view_all_transactions(df)
+        df = view_all_transactions(df)
 
     elif choice == 2:
         view_transactions_by_date(df)
 
     elif choice == 3:
-        df = add_a_transaction(df)
-
-    elif choice == 4:
-        df = edit_a_transaction(df)
-
-    elif choice == 5:
-        df = delete_transaction(df)
-
-    elif choice == 6:  
         spending_by_category(df)
 
-    elif choice == 7:
+    elif choice == 4:
         avg, monthly = average_monthly_spending(df)
 
-    elif choice == 8:
+    elif choice == 5:
         top_spending_category(df)
 
-    elif choice == 9:
+    elif choice == 6:
         visualize_monthly_spend_trend(df)
 
-    elif choice == 10:
+    elif choice == 7:
         print("Goodbye!")
         exit()
 
@@ -58,9 +46,9 @@ def main():
     while True:
         display_menu()
         try:
-            choice = int(input("Choose an option (1-10): "))
+            choice = int(input("Choose an option (1-7): "))
         except ValueError:
-            print("Please enter a number between 1 and 10.\n")
+            print("Please enter a number between 1 and 7.\n")
             continue
 
         df = handle_choice(choice, df)

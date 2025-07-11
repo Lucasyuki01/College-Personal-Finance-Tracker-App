@@ -20,9 +20,30 @@ def clear_screen():
 
 # function -> 1
 def view_all_transactions(df):
-    print(df)
-    print()
-    dont_leave_without_goodbye()
+    while True:
+        print("\n=== All Transactions ===")
+        print(df)
+        print("\nWhat would you like to do?")
+        print("1. Add a Transaction")
+        print("2. Edit a Transaction")
+        print("3. Delete a Transaction")
+        print("4. Return to Main Menu")
+
+        choice = input("Choose an option (1-4): ")
+
+        if choice == '1':
+            df = add_a_transaction(df)
+        elif choice == '2':
+            df = edit_a_transaction(df)
+        elif choice == '3':
+            df = delete_transaction(df)
+        elif choice == '4':
+            clear_screen()
+            break
+        else:
+            print("Invalid choice. Please enter a number between 1 and 4.")
+
+    return df
 
 # function -> 2
 def view_transactions_by_date(df):
@@ -227,21 +248,32 @@ def edit_a_transaction(df):
 
 # function -> 5
 def delete_transaction(df):
-    idx = int(input("Enter the index to delete: "))
-    print("Transactions")
-    print(df.loc[idx])
-    print("Deleted and saved.")
-    if idx in df.index:
-        df.drop(idx, inplace=True)
-        df.reset_index(drop=True, inplace=True)
-        # df.to_csv(DATA_FILE, index=False)
-    else:
-        print("Invalid index.")
-    print()
+    while True:
+        try:
+            idx = int(input("Enter the index to delete: "))
+            if idx not in df.index:
+                print(f"Invalid index. Please enter a number between 0 and {len(df)-1}.")
+                continue
+        except ValueError:
+            print("Invalid input. Please enter a valid integer.")
+            continue
+
+        # Confirm deletion
+        print("\nTransaction to be deleted:")
+        print(df.loc[idx])
+        confirm = input("Are you sure you want to delete this transaction? (y/n): ").lower()
+        if confirm == 'y':
+            df.drop(idx, inplace=True)
+            df.reset_index(drop=True, inplace=True)
+            df.to_csv(DATA_FILE, index=False)
+            print("Transaction deleted and saved.")
+        else:
+            print("Deletion canceled.")
+
+        break
 
     dont_leave_without_goodbye()
-    return df    
-
+    return df
 
 # function -> 6
 def spending_by_category(df):
